@@ -1,0 +1,33 @@
+#region RBG
+
+        private static void ProcessRGB()
+        {
+            MenuPatch.updateTimer += Time.deltaTime;
+            if (ModMenuPatch.RandomColor.Value)
+            {
+                if ((double)Time.time > (double)MenuPatch.timer)
+                {
+                    MenuPatch.color = UnityEngine.Random.ColorHSV(0.0f, 1f, ModMenuPatch.GlowAmount.Value, ModMenuPatch.GlowAmount.Value, ModMenuPatch.GlowAmount.Value, ModMenuPatch.GlowAmount.Value);
+                    MenuPatch.timer = Time.time + ModMenuPatch.CycleSpeed.Value;
+                }
+            }
+            else
+            {
+                if ((double)MenuPatch.hue >= 1.0)
+                    MenuPatch.hue = 0.0f;
+                MenuPatch.hue += ModMenuPatch.CycleSpeed.Value;
+                MenuPatch.color = Color.HSVToRGB(MenuPatch.hue, 1f * ModMenuPatch.GlowAmount.Value, 1f * ModMenuPatch.GlowAmount.Value);
+            }
+            if ((double)MenuPatch.updateTimer <= (double)MenuPatch.updateRate)
+                return;
+            MenuPatch.updateTimer = 0.0f;
+            GorillaTagger.Instance.UpdateColor(MenuPatch.color.r, MenuPatch.color.g, MenuPatch.color.b);
+            ((MonoBehaviourPun)GorillaTagger.Instance.myVRRig).photonView.RPC("InitializeNoobMaterial", (RpcTarget)0, new object[3]
+            {
+        (object) MenuPatch.color.r,
+        (object) MenuPatch.color.g,
+        (object) MenuPatch.color.b
+            });
+        }
+
+        #endregion
